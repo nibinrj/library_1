@@ -14,6 +14,7 @@ public class BookService {
     @Autowired
     private book_repo repo;
 
+
     public Book add_book(Book book)
     {
         return repo.save(book);
@@ -29,5 +30,15 @@ public class BookService {
     {
         Book book = repo.getById(id);
         return book;
+    }
+
+    public boolean delete_book_by_id(int id)
+    {
+        if(!repo.existsById(id)) {
+            repo.deleteById(id);
+            return true;
+        }
+            return false;
+
     }
 }

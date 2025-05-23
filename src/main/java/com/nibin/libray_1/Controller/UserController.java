@@ -5,14 +5,12 @@ import com.nibin.libray_1.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/user")
+@RestController
+@RequestMapping("/users")
 public class UserController {
 
 
@@ -23,11 +21,15 @@ public class UserController {
     public ResponseEntity<Users> createUser(@RequestBody Users user)
     {
         ResponseEntity<Users> res;
-        res = new ResponseEntity<>(service.create_user(user), HttpStatus.OK);
+        System.out.println(user.toString());
+        Users u = service.create_user(user);
+        System.out.println(u.toString());
+        res = new ResponseEntity<>(u, HttpStatus.OK);
         return res;
     }
 
 
+    @GetMapping("/getall")
     public ResponseEntity<List<Users>> get_users()
     {
         List<Users> users = service.get_users();

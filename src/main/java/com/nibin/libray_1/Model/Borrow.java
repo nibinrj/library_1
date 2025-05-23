@@ -2,7 +2,7 @@ package com.nibin.libray_1.Model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "borrow")
@@ -13,12 +13,12 @@ public class Borrow {
     private int borrow_id;
 
     @ManyToOne
-    @JoinColumn(name = "user_Id ",referencedColumnName = "user_Id")
+    @JoinColumn(name = "user_Id ",referencedColumnName = "Id")
     private Users users;
 
     @ManyToOne
     @JoinColumn(name = "book_Id",referencedColumnName = "Id")
     private Book book;
 
-    private LocalDateTime Borrowed_date;
+    private LocalDate Borrowed_date;
 }
