@@ -1,9 +1,9 @@
 package com.nibin.libray_1.Repository;
 
-import com.nibin.libray_1.Model.Borrow;
+import com.nibin.libray_1.Model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface borrow_repo extends JpaRepository< Borrow,Integer> {
+public interface User_Repo extends JpaRepository<Users,Integer> {
 }

@@ -2,7 +2,7 @@ package com.nibin.libray_1.Service;
 
 
 import com.nibin.libray_1.Model.Book;
-import com.nibin.libray_1.Repository.book_repo;
+import com.nibin.libray_1.Repository.Book_Repo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class BookService {
 
     @Autowired
-    private book_repo repo;
+    private Book_Repo repo;
 
 
     public Book add_book(Book book)
