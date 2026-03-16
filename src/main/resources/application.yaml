@@ -1,13 +1,29 @@
 server:
   port:
-    6969
+    8080
 spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/library_1
-    username: postgres
-    password: "#Nibinps4@2006"
+    username: "postgres"
+    password: "admin"
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate.ddl-auto: update
     show-sql: true
+
+  data:
+    redis:
+        host: localhost
+        port: 6379
+
+  cache:
+    type: redis
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          redis: TRACE

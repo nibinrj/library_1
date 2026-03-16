@@ -1,12 +1,16 @@
 package com.nibin.libray_1.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "book")
-public class Book {
+public class Book  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
