@@ -13,33 +13,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/book")
 public class BookController {
-
     @Autowired
     private BookService service;
-
     @PostMapping("/add")
     public ResponseEntity<Book> add_book(@RequestBody Book book )
     {
         ResponseEntity<Book> entity  = new ResponseEntity<>(service.add_book(book),HttpStatus.OK);
         return entity;
     }
-
-    @GetMapping("/get_all")
+    @GetMapping("/all")
     public ResponseEntity<List<Book>> get_book()
     {
         ResponseEntity<List<Book>> entity  = new ResponseEntity<>(service.get_books(),HttpStatus.OK);
         return entity;
     }
-
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Book> find_by_id(@PathVariable int id )
     {
         ResponseEntity<Book> entity = new ResponseEntity<>(service.find_by_id(id),HttpStatus.OK);
         return entity;
     }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete_by_id(int id)
+    public ResponseEntity<Void> delete_by_id(@PathVariable int id)
     {
         if(service.delete_book_by_id(id)){
             return new ResponseEntity<>(HttpStatus.OK);

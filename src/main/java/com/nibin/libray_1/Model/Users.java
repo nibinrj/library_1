@@ -1,35 +1,38 @@
 package com.nibin.libray_1.Model;
 
 import jakarta.persistence.*;
-import lombok.*;
+
+import java.io.Serializable;
 
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users implements Serializable {
 
     @Id
     @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_Id;
+    private int Id;
 
     @Column(name = "name")
     private String username;
 
+    private boolean status;
+
     @Override
     public String toString() {
         return "Users{" +
-                "user_Id=" + user_Id +
+                "user_Id=" + Id +
                 ", username='" + username + '\'' +
                 '}';
     }
 
-    public int getUser_Id() {
-        return user_Id;
+    public int getId() {
+        return Id;
     }
 
-    public void setUser_Id(int user_Id) {
-        this.user_Id = user_Id;
+    public void setId(int id) {
+        this.Id = id;
     }
 
     public String getUsername() {
@@ -40,8 +43,8 @@ public class Users {
         this.username = username;
     }
 
-    public Users(int user_Id, String username) {
-        this.user_Id = user_Id;
+    public Users(int Id, String username) {
+        this.Id = Id;
         this.username = username;
     }
 

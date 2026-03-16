@@ -12,11 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
-
     @Autowired
     private UserService service;
-
     @PostMapping("/add")
     public ResponseEntity<Users> createUser(@RequestBody Users user)
     {
@@ -27,8 +24,6 @@ public class UserController {
         res = new ResponseEntity<>(u, HttpStatus.OK);
         return res;
     }
-
-
     @GetMapping("/getall")
     public ResponseEntity<List<Users>> get_users()
     {
