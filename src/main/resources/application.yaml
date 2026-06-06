@@ -1,22 +1,23 @@
 server:
-  port:
-    8080
+  port: 8080
+
 spring:
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/library_1
-    username: "postgres"
-    password: "admin"
+    url: jdbc:h2:mem:librarydb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
 
   data:
     redis:
-        host: localhost
-        port: 6379
+      url: rediss://default:gQAAAAAAAUgwAAIncDFlYWY0MjY5MTEwMjg0MjUwYWJhMDJhNjkyOGFjMDkyN3AxODQwMTY@peaceful-sloth-84016.upstash.io:6379
 
   cache:
     type: redis
