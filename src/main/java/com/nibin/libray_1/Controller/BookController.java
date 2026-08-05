@@ -24,8 +24,8 @@ public class BookController {
     @GetMapping("/all")
     public ResponseEntity<List<Book>> get_book()
     {
-        ResponseEntity<List<Book>> entity  = new ResponseEntity<>(service.get_books(),HttpStatus.OK);
-        return entity;
+        ResponseEntity<List<Book>> entityy  = new ResponseEntity<>(service.get_books(),HttpStatus.OK);
+        return entityy;
     }
     @GetMapping("/{id}")
     public ResponseEntity<Book> find_by_id(@PathVariable int id )

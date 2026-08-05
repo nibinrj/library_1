@@ -17,7 +17,7 @@ spring:
 
   data:
     redis:
-      url: rediss://default:gQAAAAAAAUgwAAIncDFlYWY0MjY5MTEwMjg0MjUwYWJhMDJhNjkyOGFjMDkyN3AxODQwMTY@peaceful-sloth-84016.upstash.io:6379
+      url: rediss://default:gQAAAAAAAdfJAAIgcDExOGUyNDA4OGZmMGY0MmMyYmEyZWM1ODRiZTRlM2JkMQ@relaxed-crawdad-120777.upstash.io:6379
 
   cache:
     type: redis
