@@ -32,10 +32,7 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/library_db
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
+      
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
