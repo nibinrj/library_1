@@ -30,4 +30,11 @@ public class UserController {
         List<Users> users = service.get_users();
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<List<Users>> get_userss()
+    {
+        List<Users> users = service.get_users();
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
 }
