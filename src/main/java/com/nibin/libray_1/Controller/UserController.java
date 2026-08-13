@@ -14,9 +14,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService service;
+
     @PostMapping("/add")
-    public ResponseEntity<Users> createUser(@RequestBody Users user)
-    {
+    public ResponseEntity<Users> createUser(@RequestBody Users user) {
         ResponseEntity<Users> res;
         System.out.println(user.toString());
         Users u = service.create_user(user);
@@ -24,17 +24,12 @@ public class UserController {
         res = new ResponseEntity<>(u, HttpStatus.OK);
         return res;
     }
-    @GetMapping("/getall")
-    public ResponseEntity<List<Users>> get_users()
-    {
-        List<Users> users = service.get_users();
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Users>> get_userss()
-    {
+    @GetMapping("/getall")
+    public ResponseEntity<List<Users>> get_users() {
         List<Users> users = service.get_users();
-        return new ResponseEntity<>(users,HttpStatus.OK);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
+
+
