@@ -8,14 +8,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
-  
-env:
-  AWS_REGION: ap-south-1
-  ECR_REPOSITORY: library-app
-  ROLE_ARN: arn:aws:iam::591123316890:role/role-ecr
 
+env:
+
+  DOCKER_REPOSITORY: nibinrj/library-app
 
 jobs:
   build:
@@ -33,22 +30,16 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-            role-to-assume: ${{ env.ROLE_ARN }}
-            aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon  ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build, tag, and push image
         env:
-            REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-            IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-              docker build -t $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $REGISTRY/$ECR_REPOSITORY:latest .
-              docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-              docker push $REGISTRY/$ECR_REPOSITORY:latest
+          docker build -t ${{ env.DOCKER_REPOSITORY }}:$IMAGE_TAG -t ${{ env.DOCKER_REPOSITORY }}:latest .
+          docker push ${{ env.DOCKER_REPOSITORY }}:$IMAGE_TAG
+          docker push ${{ env.DOCKER_REPOSITORY }}:latest
