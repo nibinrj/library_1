@@ -110,6 +110,7 @@ data "aws_iam_policy_document" "library_terraform_permissions" {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
+      "s3:DeleteObject",
       "s3:ListBucket"
     ]
     resources = [
@@ -117,9 +118,30 @@ data "aws_iam_policy_document" "library_terraform_permissions" {
       "arn:aws:s3:::nibin-library-terraform-state/*"
     ]
   }
+
+
+    statement {
+      sid    = "SelfManagedOidcRole"
+      effect = "Allow"
+      actions = [
+        "iam:GetRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:GetOpenIDConnectProvider",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListPolicyVersions"
+      ]
+      resources = ["*"]
+    }
 }
 
 resource "aws_iam_policy" "library_terraform_permissions" {
   name   = "gha-terraform-library-policy"
   policy = data.aws_iam_policy_document.library_terraform_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "library_permissions_attach" {
+  role       = aws_iam_role.github_actions_terraform.name
+  policy_arn = aws_iam_policy.library_terraform_permissions.arn
 }
