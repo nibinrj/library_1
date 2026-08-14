@@ -32,7 +32,7 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::591123316890:role/gha-terraform-library
+          role-to-assume: arn:aws:iam::591123316890:role/gha-terraform-library_1
           aws-region: ap-south-1
 
       - name: Set up Terraform
