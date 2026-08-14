@@ -34,3 +34,9 @@ build/
 
 #environment variable files
 .env/
+
+#terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
