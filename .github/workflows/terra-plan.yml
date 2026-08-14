@@ -8,14 +8,22 @@ permissions:
   id-token: write
   contents: read
 
-
+      
 jobs:
   plan:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: terraform
-
+    # Add this env block to the job!
+    env:
+      TF_VAR_aws_region: "ap-south-1"
+      TF_VAR_instance_type: "t3.micro"
+      TF_VAR_key_name: "backend-key"
+      TF_VAR_app_port: "8090"
+      TF_VAR_my_ip: ${{ secrets.MY_IP }}
+      TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +31,7 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::591123316890:role/gha-terraform-library_1
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gha-terraform-library_1
           aws-region: ap-south-1
 
       - name: Set up Terraform
