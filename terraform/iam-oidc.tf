@@ -76,5 +76,5 @@
     variable "github_repo" {
       description = "GitHub repo name"
       type        = string
-      default     = "library"
+      default     = "library_1"
     }
