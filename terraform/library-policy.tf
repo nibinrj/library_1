@@ -87,17 +87,21 @@ data "aws_iam_policy_document" "library_terraform_permissions" {
       "ec2:DescribeImages",
       "ec2:DescribeInstances",
       "ec2:DescribeVpcs",
+      "ec2:DescribeVpcAttribute",
       "ec2:DescribeSubnets",
       "ec2:DescribeInternetGateways",
       "ec2:DescribeRouteTables",
       "ec2:DescribeNatGateways",
       "ec2:DescribeAddresses",
+      "ec2:DescribeAddressesAttribute",
       "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupRules",
       "ec2:DescribeTags",
       "ec2:DescribeAvailabilityZones"
     ]
     resources = ["*"]
   }
+
 
   # ---------- REMOTE STATE (S3) ----------
   # Maps to: backend "s3" block — bucket "nibin-library-terraform-state"
@@ -120,21 +124,33 @@ data "aws_iam_policy_document" "library_terraform_permissions" {
   }
 
 
-    statement {
-      sid    = "SelfManagedOidcRole"
-      effect = "Allow"
-      actions = [
-        "iam:GetRole",
-        "iam:GetPolicy",
-        "iam:GetPolicyVersion",
-        "iam:GetOpenIDConnectProvider",
-        "iam:ListRolePolicies",
-        "iam:ListAttachedRolePolicies",
-        "iam:ListPolicyVersions"
-      ]
-      resources = ["*"]
-    }
-}
+    # ---------- IAM MANAGEMENT ----------
+      statement {
+        sid    = "IAMManagement"
+        effect = "Allow"
+        actions = [
+          # OIDC Data Source
+          "iam:GetOpenIDConnectProvider",
+          "iam:ListOpenIDConnectProviders",
+
+          # SSM Role & Instance Profile Creation
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:GetRole",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:CreateInstanceProfile",
+          "iam:DeleteInstanceProfile",
+          "iam:GetInstanceProfile",
+          "iam:AddRoleToInstanceProfile",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:PassRole"
+        ]
+        resources = ["*"]
+      }
+  }
 
 resource "aws_iam_policy" "library_terraform_permissions" {
   name   = "gha-terraform-library-policy"
