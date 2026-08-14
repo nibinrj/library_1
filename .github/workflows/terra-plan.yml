@@ -1,17 +1,8 @@
 name: Terraform plan
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'terraform/**'
-
-  pull_request:
-    branches:
-      - master
-    paths:
-      - 'terraform/**'
   workflow_dispatch:
+
+
 
 permissions:
   id-token: write
