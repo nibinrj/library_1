@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build and Push Docker  Image') {
             steps {
                 script {
                     // Logs into Docker Hub using the credentials stored in Jenkins
