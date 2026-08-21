@@ -14,7 +14,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds-id'
 
         // REPLACE 'yourdockerhubuser' WITH YOUR ACTUAL DOCKER HUB USERNAME
-        IMAGE_NAME = 'yourdockerhubuser/library_1'
+        IMAGE_NAME = 'nibinrj/library_1'
 
         // Uses the Jenkins build number as a unique Docker image tag
         IMAGE_TAG = "${env.BUILD_NUMBER}"
