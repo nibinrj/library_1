@@ -28,13 +28,19 @@ pipeline {
             }
         }
 
-        stage('Maven Build') {
-            steps {
-                echo "Compiling and packaging the Java application..."
-                // Runs Maven to build the .jar/.war file
-                sh 'mvn clean package -DskipTests'
-            }
-        }
+      stage('Maven Build') {
+                  steps {
+                      echo "Compiling and packaging the Java application..."
+
+                      // 1. Print the version for debugging
+                      sh 'mvn -version'
+
+                      // 2. Temporarily force JAVA_HOME to the Java 21 path just for this build
+                      withEnv(['JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto.x86_64']) {
+                          sh 'mvn clean package -DskipTests'
+                      }
+                  }
+              }
 
         stage('Build Docker Image') {
             steps {
