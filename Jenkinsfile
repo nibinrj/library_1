@@ -1,52 +1,75 @@
 pipeline {
-    agent any
-
-    environment {
-        // Your Docker Hub repository
-        DOCKER_REPOSITORY = 'nibinrj/library-app'
-
-        // env.GIT_COMMIT is automatically provided by Jenkins (equivalent to github.sha)
-        IMAGE_TAG = "${env.GIT_COMMIT}"
+    // This explicitly tells Jenkins to run this job ONLY on your EC2 Agent
+    agent {
+        label 'docker-agent'
     }
 
-    tools {
-        // These names match EXACTLY what you configured in Jenkins
-        jdk 'jdk-24'
-        maven 'maven-3'
+    triggers {
+        // Triggers the build automatically on git push
+        githubPush()
+    }
+
+    environment {
+        // The ID of the Docker Hub credentials we created in Jenkins earlier
+        DOCKERHUB_CREDENTIALS = 'dockerhub-creds-id'
+
+        // REPLACE 'yourdockerhubuser' WITH YOUR ACTUAL DOCKER HUB USERNAME
+        IMAGE_NAME = 'yourdockerhubuser/library_1'
+
+        // Uses the Jenkins build number as a unique Docker image tag
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Pulls the code from GitHub
+                echo "Pulling code from GitHub to the EC2 Agent..."
                 checkout scm
             }
         }
 
-        stage('Build with Maven') {
+        stage('Maven Build') {
             steps {
-                // Compiles and packages the Java application
-                sh 'mvn -B package --file pom.xml'
+                echo "Compiling and packaging the Java application..."
+                // Runs Maven to build the .jar/.war file
+                sh 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    // Logs into Docker Hub using the credentials stored in Jenkins
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                echo "Building the Docker image..."
+                // Builds the Dockerfile located in your repo root
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+                sh 'docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest'
+            }
+        }
 
-                        // Builds the Docker image locally
-                        def appImage = docker.build("${env.DOCKER_REPOSITORY}:${env.IMAGE_TAG}")
-
-                        // Pushes the image with the Git commit SHA tag
-                        appImage.push()
-
-                        // Pushes the same image with the 'latest' tag
-                        appImage.push("latest")
-                    }
+        stage('Push Docker Image') {
+            steps {
+                echo "Pushing image to Docker Hub..."
+                // Securely injects credentials to log in and push
+                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+                    sh 'docker push ${IMAGE_NAME}:latest'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            // Cleans up the local EC2 agent's hard drive so it doesn't run out of space
+            echo "Cleaning up local Docker images..."
+            sh 'docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true'
+            sh 'docker rmi ${IMAGE_NAME}:latest || true'
+        }
+        success {
+            echo "✅ Pipeline succeeded! Image is now in Docker Hub."
+        }
+        failure {
+            echo "❌ Pipeline failed. Check the Jenkins console output for errors."
         }
     }
 }
