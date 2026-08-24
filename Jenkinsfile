@@ -36,9 +36,8 @@ pipeline {
                       sh 'mvn -version'
 
                       // 2. Temporarily force JAVA_HOME to the Java 21 path just for this build
-                      withEnv(['JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto.x86_64']) {
-                          sh 'mvn clean package -DskipTests'
-                      }
+                       sh 'mvn clean package -DskipTests'
+
                   }
               }
 
@@ -53,13 +52,30 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                echo "Pushing image to Docker Hub..."
-                // Securely injects credentials to log in and push
-                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
-                    sh 'docker push ${IMAGE_NAME}:latest'
-                }
+                sh '''
+                    DOCKER_USER=$(aws ssm get-parameter \
+                        --name "/dev/docker/username" \
+                        --with-decryption \
+                        --region us-east-1 \
+                        --query "Parameter.Value" \
+                        --output text)
+
+                    DOCKER_PASS=$(aws ssm get-parameter \
+                        --name "/dev/docker/password" \
+                        --with-decryption \
+                        --region us-east-1 \
+                        --query "Parameter.Value" \
+                        --output text)
+
+                    echo "$DOCKER_PASS" | docker login \
+                        -u "$DOCKER_USER" \
+                        --password-stdin docker.io
+
+                    docker push "${IMAGE_NAME}:${IMAGE_TAG}"
+                    docker push "${IMAGE_NAME}:latest"
+
+                    docker logout docker.io
+                '''
             }
         }
     }
@@ -72,10 +88,10 @@ pipeline {
             sh 'docker rmi ${IMAGE_NAME}:latest || true'
         }
         success {
-            echo "✅ Pipeline succeeded! Image is now in Docker Hub."
+            echo " Pipeline succeeded! Image is now in Docker Hub."
         }
         failure {
-            echo "❌ Pipeline failed. Check the Jenkins console output for errors."
+            echo " Pipeline failed. Check the Jenkins console output for errors."
         }
     }
 }
