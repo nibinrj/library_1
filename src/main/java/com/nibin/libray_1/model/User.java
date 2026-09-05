@@ -1,4 +1,4 @@
-package com.nibin.libray_1.Model;
+package com.nibin.libray_1.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,7 +10,6 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
-
 @Entity
 @Getter
 @Setter
@@ -18,12 +17,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @Table(name = "users")
-public class Users implements Serializable {
+public class User implements Serializable {
 
     @Id
-    @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
     @NotBlank(message = "must not be blank")
     @Column(name = "name")

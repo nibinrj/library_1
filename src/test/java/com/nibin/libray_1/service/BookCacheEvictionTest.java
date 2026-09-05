@@ -1,11 +1,12 @@
-package com.nibin.libray_1.Service;
+package com.nibin.libray_1.service;
 
-import com.nibin.libray_1.Model.Book;
-import com.nibin.libray_1.Model.BorrowRequest;
-import com.nibin.libray_1.Model.Users;
-import com.nibin.libray_1.Repository.Book_Repo;
-import com.nibin.libray_1.Repository.Borrow_Repo;
-import com.nibin.libray_1.Repository.User_Repo;
+import com.nibin.libray_1.model.Book;
+import com.nibin.libray_1.model.Loan;
+import com.nibin.libray_1.model.LoanRequest;
+import com.nibin.libray_1.model.User;
+import com.nibin.libray_1.repository.BookRepository;
+import com.nibin.libray_1.repository.LoanRepository;
+import com.nibin.libray_1.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,62 +28,61 @@ class BookCacheEvictionTest {
     @Autowired
     private BookService bookService;
     @Autowired
-    private BorrowService borrowService;
+    private LoanService loanService;
     @Autowired
     private CacheManager cacheManager;
     @Autowired
-    private Book_Repo book_repo;
+    private BookRepository bookRepository;
     @Autowired
-    private User_Repo user_repo;
+    private UserRepository userRepository;
     @Autowired
-    private Borrow_Repo borrow_repo;
+    private LoanRepository loanRepository;
 
     private int bookId;
     private int userId;
 
     @BeforeEach
     void setUp() {
-        borrow_repo.deleteAll();
-        book_repo.deleteAll();
-        user_repo.deleteAll();
+        loanRepository.deleteAll();
+        bookRepository.deleteAll();
+        userRepository.deleteAll();
         cacheManager.getCache("book").clear();
 
         Book book = new Book();
         book.setName("Dune");
         book.setAuthor("Herbert");
         book.setCopies(1);
-        bookId = bookService.add_book(book).getId();
+        bookId = bookService.create(book).getId();
 
-        Users user = new Users();
+        User user = new User();
         user.setUsername("nibin");
-        userId = user_repo.save(user).getId();
+        userId = userRepository.save(user).getId();
     }
 
     @Test
     void borrowingInvalidatesTheCachedBook() {
-        assertEquals(1, bookService.find_by_id(bookId).getCopies());
+        assertEquals(1, bookService.findById(bookId).getCopies());
 
-        borrowService.borrow_book(new BorrowRequest(userId, bookId));
+        loanService.borrow(new LoanRequest(userId, bookId));
 
-        assertEquals(0, bookService.find_by_id(bookId).getCopies());
+        assertEquals(0, bookService.findById(bookId).getCopies());
     }
 
     @Test
     void returningInvalidatesTheCachedBook() {
-        BorrowRequest request = new BorrowRequest(userId, bookId);
-        borrowService.borrow_book(request);
-        assertEquals(0, bookService.find_by_id(bookId).getCopies());
+        Loan loan = loanService.borrow(new LoanRequest(userId, bookId));
+        assertEquals(0, bookService.findById(bookId).getCopies());
 
-        borrowService.returnBook(request);
+        loanService.returnLoan(loan.getId());
 
-        assertEquals(1, bookService.find_by_id(bookId).getCopies());
+        assertEquals(1, bookService.findById(bookId).getCopies());
     }
 
     @Test
     void deletingEvictsTheCachedBook() {
-        bookService.find_by_id(bookId);
+        bookService.findById(bookId);
 
-        bookService.delete_book_by_id(bookId);
+        bookService.deleteById(bookId);
 
         assertNull(cacheManager.getCache("book").get(bookId));
     }

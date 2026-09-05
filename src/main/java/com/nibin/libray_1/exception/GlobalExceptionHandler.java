@@ -1,5 +1,6 @@
 package com.nibin.libray_1.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +20,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(ConflictException e) {
         return build(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    /** Safety net: any constraint we did not check for explicitly is still a conflict, not a 500. */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException e) {
+        return build(HttpStatus.CONFLICT, "The request conflicts with existing data");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

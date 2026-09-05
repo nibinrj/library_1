@@ -41,34 +41,39 @@ straight from the database.
 
 ## API Endpoints
 
-### Book Controller
+Base path: `/api/v1`.
 
-Base Path: `/book`
-
-| Method | Endpoint | Description | Request Body Example |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/add` | Adds a new book. Returns 201. | `{"name": "The Hobbit", "author": "J.R.R. Tolkien", "copies": 5}` |
-| `GET` | `/all` | Retrieves a list of all books. | (None) |
-| `GET` | `/{id}` | Finds a book by its ID. | (None) |
-| `DELETE`| `/{id}` | Deletes a book by its ID. | (None) |
-
-### User Controller
-
-Base Path: `/users`
+### Books
 
 | Method | Endpoint | Description | Request Body Example |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/add` | Adds a new user. Returns 201. | `{"username": "John Doe"}` |
-| `GET` | `/getall` | Retrieves all users. | (None) |
+| `POST` | `/api/v1/books` | Adds a book. Returns 201. | `{"name": "The Hobbit", "author": "J.R.R. Tolkien", "copies": 5}` |
+| `GET` | `/api/v1/books` | Lists all books. | (None) |
+| `GET` | `/api/v1/books/{id}` | Fetches one book. | (None) |
+| `DELETE` | `/api/v1/books/{id}` | Deletes a book. Returns 204. | (None) |
 
-### Borrow Controller
-
-Base Path: `/borrow`
+### Users
 
 | Method | Endpoint | Description | Request Body Example |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/borrow` | Borrows a book for a user. | `{"userId": 1, "bookId": 1}` |
-| `POST` | `/return` | Returns a borrowed book. | `{"userId": 1, "bookId": 1}` |
+| `POST` | `/api/v1/users` | Adds a user. Returns 201. | `{"username": "John Doe"}` |
+| `GET` | `/api/v1/users` | Lists all users. | (None) |
+
+### Loans
+
+Borrowing creates a loan; returning is a state transition on that loan, so it needs the loan id
+from the borrow response. Returned loans are kept as history rather than deleted.
+
+| Method | Endpoint | Description | Request Body Example |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/loans` | Borrows a book. Returns 201 and the loan. | `{"userId": 1, "bookId": 1}` |
+| `POST` | `/api/v1/loans/{id}/return` | Returns a borrowed book. | (None) |
+
+A loan looks like:
+
+```json
+{"id": 1, "bookId": 1, "userId": 1, "borrowedDate": "2026-09-05", "returnedDate": null}
+```
 
 ### Error responses
 

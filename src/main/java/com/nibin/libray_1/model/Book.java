@@ -1,4 +1,4 @@
-package com.nibin.libray_1.Model;
+package com.nibin.libray_1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -11,19 +11,18 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "book")
-public class Book  implements Serializable {
+@Table(name = "books")
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
     @NotBlank(message = "must not be blank")
     private String name;
