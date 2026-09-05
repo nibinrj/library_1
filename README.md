@@ -26,7 +26,9 @@ A simple RESTful API for a library management system built with Java and Spring 
 The application runs on port `8099`. Redis is optional for local runs — set `REDIS_URL` to point at
 an instance, otherwise it falls back to `redis://localhost:6379`. See `.env.example`.
 
-Interactive API docs: <http://localhost:8099/swagger-ui.html>
+Interactive API docs: <http://localhost:8099/swagger-ui.html> (raw spec at `/v3/api-docs`).
+Every endpoint documents its request, response and error codes there, so the tables below are
+just a summary.
 
 ### Docker
 
