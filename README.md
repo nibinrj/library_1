@@ -28,6 +28,17 @@ an instance, otherwise it falls back to `redis://localhost:6379`. See `.env.exam
 
 Interactive API docs: <http://localhost:8099/swagger-ui.html>
 
+### Docker
+
+```bash
+./mvnw package
+docker build -t library-app .
+docker run -p 8099:8099 -e REDIS_URL=<your redis url> library-app
+```
+
+Redis is optional: if it is unreachable the app logs a warning and serves every request
+straight from the database.
+
 ## API Endpoints
 
 ### Book Controller

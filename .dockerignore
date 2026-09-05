@@ -1,0 +1,12 @@
+# The build only needs the packaged jar; keep the context small.
+.git
+.github
+.idea
+.mvn
+terraform
+src
+target/*
+!target/*.jar
+.env
+*.md
+Jenkinsfile
