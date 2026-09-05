@@ -1,33 +1,21 @@
 package com.nibin.libray_1.Model;
 
-import java.time.LocalDate;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class BorrowRequest {
+
+    @Positive(message = "must be a positive id")
     private int userId;
+
+    @Positive(message = "must be a positive id")
     private int bookId;
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public BorrowRequest(int userId, int bookId) {
-        this.userId = userId;
-        this.bookId = bookId;
-    }
-
-    public BorrowRequest() {
-    }
 }

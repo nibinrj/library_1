@@ -2,12 +2,21 @@ package com.nibin.libray_1.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "book")
 public class Book  implements Serializable {
@@ -16,49 +25,12 @@ public class Book  implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
+    @NotBlank(message = "must not be blank")
     private String name;
+
+    @NotBlank(message = "must not be blank")
     private String author;
-    private int copies ;
 
-    public int getId() {
-        return Id;
-    }
-
-    public void setId(int id) {
-        Id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public int getCopies() {
-        return copies;
-    }
-
-    public void setCopies(int copies) {
-        this.copies = copies;
-    }
-
-    public Book(int id, String name, String author, int copies) {
-        Id = id;
-        this.name = name;
-        this.author = author;
-        this.copies = copies;
-    }
-
-    public Book() {
-    }
+    @Min(value = 0, message = "must not be negative")
+    private int copies;
 }

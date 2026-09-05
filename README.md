@@ -6,19 +6,29 @@ A simple RESTful API for a library management system built with Java and Spring 
 
 * **Book Management**: Perform CRUD (Create, Read, Delete) operations for books in the library.
 * **User Management**: Add and retrieve library users.
-* **Borrowing System**: Allows users to borrow available books, which decrements the book's copy count.
+* **Borrowing System**: Users borrow available books (decrementing the copy count) and return them.
 
 ## Technologies Used
 
-* **Java 24**
+* **Java 21**
 * **Spring Boot 3.4.5**
 * **Spring Data JPA**: For data persistence and database operations.
-* **PostgreSQL**: As the relational database.
+* **H2**: In-memory relational database (data is not persisted across restarts).
+* **Redis**: Caching layer for book lookups.
 * **Maven**: For project build and dependency management.
 
-## API Endpoints
+## Running Locally
 
-The following are the available API endpoints for interacting with the application. The application runs on port `6969`.
+```bash
+./mvnw spring-boot:run
+```
+
+The application runs on port `8099`. Redis is optional for local runs — set `REDIS_URL` to point at
+an instance, otherwise it falls back to `redis://localhost:6379`. See `.env.example`.
+
+Interactive API docs: <http://localhost:8099/swagger-ui.html>
+
+## API Endpoints
 
 ### Book Controller
 
@@ -26,9 +36,9 @@ Base Path: `/book`
 
 | Method | Endpoint | Description | Request Body Example |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/add` | Adds a new book. | `{"name": "The Hobbit", "author": "J.R.R. Tolkien", "copies": 5}` |
-| `GET` | `/get_all` | Retrieves a list of all books. | (None) |
-| `GET` | `/get/{id}` | Finds a book by its ID. | (None) |
+| `POST` | `/add` | Adds a new book. Returns 201. | `{"name": "The Hobbit", "author": "J.R.R. Tolkien", "copies": 5}` |
+| `GET` | `/all` | Retrieves a list of all books. | (None) |
+| `GET` | `/{id}` | Finds a book by its ID. | (None) |
 | `DELETE`| `/{id}` | Deletes a book by its ID. | (None) |
 
 ### User Controller
@@ -37,7 +47,7 @@ Base Path: `/users`
 
 | Method | Endpoint | Description | Request Body Example |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/add` | Adds a new user. | `{"username": "John Doe"}` |
+| `POST` | `/add` | Adds a new user. Returns 201. | `{"username": "John Doe"}` |
 | `GET` | `/getall` | Retrieves all users. | (None) |
 
 ### Borrow Controller
@@ -47,3 +57,9 @@ Base Path: `/borrow`
 | Method | Endpoint | Description | Request Body Example |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/borrow` | Borrows a book for a user. | `{"userId": 1, "bookId": 1}` |
+| `POST` | `/return` | Returns a borrowed book. | `{"userId": 1, "bookId": 1}` |
+
+### Error responses
+
+Errors come back as JSON: `{"timestamp": "...", "status": 404, "message": "Book not found: 7"}`.
+`404` for unknown ids, `409` for conflicts (already borrowed, no copies left), `400` for validation failures.
