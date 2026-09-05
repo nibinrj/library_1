@@ -10,6 +10,7 @@ import com.nibin.libray_1.Repository.User_Repo;
 import com.nibin.libray_1.exception.ConflictException;
 import com.nibin.libray_1.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class BorrowService {
     @Autowired
     private Borrow_Repo borrow_repo;
     @Transactional
+    @CacheEvict(value = "book", key = "#borrowRequest.bookId")
     public String borrow_book(BorrowRequest borrowRequest) {
         Book book = book_repo.findById(borrowRequest.getBookId())
                 .orElseThrow(() -> new NotFoundException("No book found with id: " + borrowRequest.getBookId()));
@@ -52,6 +54,7 @@ public class BorrowService {
     }
 
     @Transactional
+    @CacheEvict(value = "book", key = "#request.bookId")
     public String returnBook(BorrowRequest request) {
         Borrow borrow = borrow_repo
                 .findByUsersIdAndBookId(request.getUserId(), request.getBookId())
