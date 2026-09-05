@@ -17,7 +17,7 @@ spring:
 
   data:
     redis:
-      url: rediss://default:gQAAAAAAAdfJAAIgcDExOGUyNDA4OGZmMGY0MmMyYmEyZWM1ODRiZTRlM2JkMQ@relaxed-crawdad-120777.upstash.io:6379
+      url: ${REDIS_URL:redis://localhost:6379}
 
   cache:
     type: redis
@@ -27,4 +27,4 @@ logging:
     org:
       springframework:
         data:
-          redis: TRACE
+          redis: WARN

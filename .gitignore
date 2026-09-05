@@ -33,7 +33,7 @@ build/
 .vscode/
 
 #environment variable files
-.env/
+.env
 
 #terraform
 .terraform/
