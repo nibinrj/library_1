@@ -2,6 +2,7 @@ package com.nibin.libray_1.Controller;
 
 import com.nibin.libray_1.Model.Users;
 import com.nibin.libray_1.Service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,8 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/add")
-    public ResponseEntity<Users> createUser(@RequestBody Users user) {
-        ResponseEntity<Users> res;
-        System.out.println(user.toString());
-        Users u = service.create_user(user);
-        System.out.println(u.toString());
-        res = new ResponseEntity<>(u, HttpStatus.OK);
-        return res;
+    public ResponseEntity<Users> createUser(@Valid @RequestBody Users user) {
+        return new ResponseEntity<>(service.create_user(user), HttpStatus.CREATED);
     }
 
     @GetMapping("/getall")
